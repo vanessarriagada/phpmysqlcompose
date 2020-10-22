@@ -1,0 +1,29 @@
+# ./docker-compose.yml
+
+version: '3'
+
+services:
+  mysql:
+    image: vanessaarriagada/mysql56:2
+    container_name: mysql_db
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+        - dump/mydump:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dbphp
+      MYSQL_USER: mysqluser
+      MYSQL_PASSWORD: mypass
+    ports:
+      - "3306:3306"
+    restart: always
+  web:
+    image: vanessaarriagada/ubuntuapachephp5:latest
+    container_name: php5_web
+    depends_on:
+      - mysql
+    ports:
+      - "8080:80"
+      - "2222:22"
+    stdin_open: true
+    tty: true
